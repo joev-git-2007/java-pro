@@ -38,23 +38,26 @@ public class Dashboard extends JFrame {
     }
 
     private JPanel buildBottomNav() {
-        JPanel nav = new JPanel(new GridLayout(1, 5));
-        String[] names = {"Home", "Add", "History", "Goals", "Profile"};
-        for (String n : names) {
-            JButton b = new JButton(n);
-            b.setFocusPainted(false);
-            b.setBackground(Color.WHITE);
-            b.addActionListener(e -> {
-                cardLayout.show(cards, n);
-                if (n.equals("Home")) refreshHome();
-                if (n.equals("Goals")) refreshGoals();
-            });
-            nav.add(b);
-        }
-        return nav;
+    JPanel nav = new JPanel(new GridLayout(1, 5));
+    String[] names = {"Home", "Add", "History", "Goals", "Trainer", "Profile"};
+    String[] icons = {"🏠", "➕", "📜", "🎯", "🏋", "👤"};
+    for (int i = 0; i < names.length; i++) {
+        String n = names[i];
+        JButton b = new JButton(icons[i]);
+        b.setFont(new Font("SansSerif", Font.PLAIN, 20));
+        b.setToolTipText(n);
+        b.setFocusPainted(false);
+        b.setBackground(Color.WHITE);
+        b.addActionListener(e -> {
+            cardLayout.show(cards, n);
+            cards.add(buildTrainerPanel(), "Trainer");
+            if (n.equals("Home")) refreshHome();
+            if (n.equals("Goals")) refreshGoals();
+        });
+        nav.add(b);
     }
-
-
+    return nav;
+}
     private JPanel buildHomePanel() {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -247,7 +250,6 @@ public class Dashboard extends JFrame {
         edit.addActionListener(e -> editGoal());
         goalsPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         goalsPanel.add(edit);
-
         return goalsPanel;
     }
 
@@ -282,7 +284,42 @@ public class Dashboard extends JFrame {
             }
         }
     }
+    private JLabel trainerAdviceLabel;
 
+private JPanel buildTrainerPanel() {
+    JPanel panel = new JPanel();
+    panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+    panel.setBackground(LIGHT_BG);
+    panel.setBorder(BorderFactory.createEmptyBorder(16, 16, 16, 16));
+    panel.add(sectionHeader("Trainer's Advice"));
+
+    JPanel c = card();
+    trainerAdviceLabel = new JLabel();
+    trainerAdviceLabel.setVerticalAlignment(SwingConstants.TOP);
+    c.add(trainerAdviceLabel);
+    panel.add(c);
+
+    JButton refresh = new JButton("Refresh Advice");
+    refresh.setBackground(PURPLE);
+    refresh.setForeground(Color.WHITE);
+    refresh.setAlignmentX(Component.LEFT_ALIGNMENT);
+    refresh.addActionListener(e -> refreshTrainer());
+    panel.add(Box.createRigidArea(new Dimension(0, 10)));
+    panel.add(refresh);
+
+    refreshTrainer();
+
+    JScrollPane scroll = new JScrollPane(panel);
+    scroll.setBorder(null);
+    JPanel wrapper = new JPanel(new BorderLayout());
+    wrapper.add(scroll, BorderLayout.CENTER);
+    return wrapper;
+}
+
+private void refreshTrainer() {
+    String advice = service.getTrainerAdvice().replace("\n", "<br>");
+    trainerAdviceLabel.setText("<html><div style='width:280px'>" + advice + "</div></html>");
+}
   
     private JLabel pNameLabel, pAgeLabel, pHeightLabel, pWeightLabel, pMemberLabel;
 

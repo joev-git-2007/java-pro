@@ -86,17 +86,16 @@ public class LoginScreen extends JFrame {
     }
 
     private JPanel labeled(String labelText, JComponent field) {
-        JPanel p = new JPanel();
-        p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
-        JLabel l = new JLabel(labelText);
-        l.setAlignmentX(Component.LEFT_ALIGNMENT);
-        field.setAlignmentX(Component.LEFT_ALIGNMENT);
-        field.setMaximumSize(new Dimension(300, 30));
-        p.add(l);
-        p.add(field);
-        return p;
-    }
-
+    JPanel p = new JPanel();
+    p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
+    JLabel l = new JLabel(labelText);
+    l.setAlignmentX(Component.CENTER_ALIGNMENT);
+    field.setAlignmentX(Component.CENTER_ALIGNMENT);
+    field.setMaximumSize(new Dimension(300, 30));
+    p.add(l);
+    p.add(field);
+    return p;
+}
     private void doLogin() {
         String u = usernameField.getText().trim();
         String pw = new String(passwordField.getPassword());

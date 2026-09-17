@@ -243,4 +243,42 @@ public class FitTrackService {
         if (pct >= 50) return "Halfway there, keep going!";
         return "Every step counts. You've got this!";
     }
+    public String getTrainerAdvice() {
+    StringBuilder advice = new StringBuilder();
+    DailyActivity t = getToday();
+    User u = getCurrentUser();
+
+    if (t.getSteps() < t.getStepGoal()) {
+        advice.append("• You're ").append(t.getStepGoal() - t.getSteps())
+              .append(" steps short of your goal today. A short evening walk can close that gap.\n\n");
+    } else {
+        advice.append("• Great job hitting your step goal today!\n\n");
+    }
+
+    if (t.getWaterLiters() < t.getWaterGoalLiters()) {
+        advice.append("• Water intake is below target. Try to drink ")
+              .append(String.format("%.1f", t.getWaterGoalLiters() - t.getWaterLiters()))
+              .append("L more before the day ends.\n\n");
+    }
+
+    if (t.getExerciseMinutes() < t.getExerciseGoalMinutes()) {
+        advice.append("• You still have ").append(t.getExerciseGoalMinutes() - t.getExerciseMinutes())
+              .append(" minutes of exercise left for today.\n\n");
+    }
+
+    String bmiStatus = u.getBmiStatus();
+    if (bmiStatus.equals("Underweight")) {
+        advice.append("• Your BMI suggests you're underweight. Consider increasing calorie intake with nutrient-dense foods.\n\n");
+    } else if (bmiStatus.equals("Overweight") || bmiStatus.equals("Obese")) {
+        advice.append("• Your BMI suggests focusing on a calorie deficit combined with regular cardio.\n\n");
+    } else {
+        advice.append("• Your BMI is in a healthy range — keep maintaining your current routine.\n\n");
+    }
+
+    double pct = getGoalProgressPercent();
+    advice.append("• You are ").append(String.format("%.0f", pct)).append("% toward your goal. ");
+    advice.append(pct < 50 ? "Stay consistent, results build over time." : "You're making solid progress, keep it up!");
+
+    return advice.toString();
+}
 }
